@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Spring-Boot-Exception.iml" filepath="$PROJECT_DIR$/Spring-Boot-Exception.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common_utils/common_utils.iml" filepath="$PROJECT_DIR$/common/common_utils/common_utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/renderg_xls.iml" filepath="$PROJECT_DIR$/renderg_xls.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server_excel/server_excel.iml" filepath="$PROJECT_DIR$/server/server_excel/server_excel.iml" />
     </modules>

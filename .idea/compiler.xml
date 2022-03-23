@@ -14,16 +14,16 @@
     <bytecodeTargetLevel>
       <module name="common" target="11" />
       <module name="common_utils" target="11" />
-      <module name="renderg_xls" target="11" />
       <module name="server" target="11" />
       <module name="server_excel" target="11" />
+      <module name="Spring-Boot-Exception" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Spring-Boot-Exception" options="-parameters" />
       <module name="common" options="-parameters" />
       <module name="common_utils" options="-parameters" />
-      <module name="renderg_xls" options="-parameters" />
       <module name="server" options="-parameters" />
       <module name="server_excel" options="-parameters" />
     </option>

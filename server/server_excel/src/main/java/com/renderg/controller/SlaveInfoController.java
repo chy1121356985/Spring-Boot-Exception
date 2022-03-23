@@ -30,11 +30,9 @@ public class SlaveInfoController {
     @GetMapping("/find")
     @Scheduled(cron = "0 30 8 * * ?")
     public R findAll() {
+
         String msg = infoService.findSlave();
-
-
-
-        return null;
+        return R.ok().data("msg", msg);
     }
 
 }
