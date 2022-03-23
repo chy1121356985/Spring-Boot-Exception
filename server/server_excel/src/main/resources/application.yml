@@ -1,0 +1,57 @@
+#修改D端口号默认8080
+server:
+  port: 8001
+  tomcat:
+    remoteip:
+      host-header: 0.0.0.0
+
+#mybatis_plus日志
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#logging:
+#  level: info
+spring:
+  # Mybatis_plus sql效率模式
+  profiles:
+    active: dev
+    # Mysql数据库连接
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.128.133:3306/chydb?serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+    connection-test-query: SELECT 1
+    connection-timeout: 60000
+    idle-timeout: 500000
+    max-lifetime: 540000
+    maximum-pool-size: 12
+    minimum-idle: 10
+    pool-name: GuliHikariPool
+    jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+  #关闭缓存
+  thymeleaf:
+    cache: false
+    check-template: false
+    check-template-location: false
+  mvc:
+    format:
+      date: yyyy-MM-dd
+
+
+
+mybatis:
+  #指定myBatis的核心配置文件与Mapper映射文件
+  mapper-locations: mapper/*.xml
+  # 注意：对应实体类的路径
+  type-aliases-package: com.renderg.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+
