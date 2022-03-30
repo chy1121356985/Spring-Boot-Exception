@@ -1,9 +1,15 @@
 package auto;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class tes {
     public static void main(String[] args) {
-        String str="a(123)";
-        System.out.println(str.indexOf("5"));
-        System.out.println(str.indexOf("2"));
+        List<String> obj = new ArrayList<>();
+        obj.add("1");
+        obj.add("2");
+        obj.add("3");
+        Collections.sort(obj);
     }
 }

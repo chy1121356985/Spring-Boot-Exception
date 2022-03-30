@@ -1,6 +1,6 @@
 #修改D端口号默认8080
 server:
-  port: 8001
+  port: 8088
   tomcat:
     remoteip:
       host-header: 0.0.0.0

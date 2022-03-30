@@ -10,9 +10,7 @@ import com.renderg.util.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -57,12 +55,16 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 Boolean end = true;
                 Hardware hardware = new Hardware();
                 DiskStr diskStrs = new DiskStr();
-                RAMFree ramFree = new RAMFree();
                 Enable enable = new Enable();
                 RamError ramError = new RamError();
                 SlaveInfo slaveInfo = new SlaveInfo();
                 String substring = null;
                 int diskStrC = 0;
+
+                //判断是否是无效ID，true直接跳过处理。
+                if ("rendergmaster".equals(info.get(i).getId())){
+                    continue;
+                }
 
                 try {
                     substring = diskStr.substring(indexOf + 1, indexOf1 - 4);
@@ -74,6 +76,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                         diskStrList.add(diskStrs);
 
                         end = false;
+
                     }
 
                 } catch (Exception e) {
@@ -154,6 +157,17 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 //        System.out.println(enableMap);
 
         int size = diskStrList.size() + ramErrors.size() + enableList.size();
+        //对id进行排序
+        Collections.sort(diskStrList, new Comparator<DiskStr>() {
+            @Override
+            public int compare(DiskStr o1, DiskStr o2) {
+                if(o1.getId().compareTo(o2.getId())>=1){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+        });
         String str = "异常节点数量:" + size + "\n" + "C盘可用空间不足10GB: " + diskStrList.size() + "台" + "\n";
 
         for (DiskStr diskStr : diskStrList) {
@@ -165,11 +179,33 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         str = str + "内存减小数量: " + ramErrors.size() + "台" + "\n";
+
+        Collections.sort(ramErrors, new Comparator<RamError>() {
+            @Override
+            public int compare(RamError o1, RamError o2) {
+                if(o1.getId().compareTo(o2.getId())>=1){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+        });
         for (RamError ramError : ramErrors) {
             str = str + ramError + "\n";
         }
 
         str = str + "Disabled数量: " + enableList.size() + "台" + "\n";
+
+        Collections.sort(enableList, new Comparator<Enable>() {
+            @Override
+            public int compare(Enable o1, Enable o2) {
+                if(o1.getId().compareTo(o2.getId())>=1){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+        });
         for (Enable enable : enableList) {
             str = str + enable + "\n";
         }
