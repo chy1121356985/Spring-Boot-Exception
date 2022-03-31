@@ -62,7 +62,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 int diskStrC = 0;
 
                 //判断是否是无效ID，true直接跳过处理。
-                if ("rendergmaster".equals(info.get(i).getId())){
+                if ("rendergmaster".equals(info.get(i).getId())) {
                     continue;
                 }
 
@@ -117,7 +117,6 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 QueryWrapper<SlaveInfo> wrapper = new QueryWrapper<>();
                 wrapper.eq("id", info.get(i).getId());
                 SlaveInfo slave = baseMapper.selectOne(wrapper);
-                System.out.println(info.get(i).getId() + "S");
 
                 try {
                     if (slave.getArm() > info.get(i).getRam()) {
@@ -161,9 +160,9 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         Collections.sort(diskStrList, new Comparator<DiskStr>() {
             @Override
             public int compare(DiskStr o1, DiskStr o2) {
-                if(o1.getId().compareTo(o2.getId())>=1){
+                if (o1.getId().compareTo(o2.getId()) >= 1) {
                     return 1;
-                }else{
+                } else {
                     return -1;
                 }
             }
@@ -180,38 +179,41 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
         str = str + "内存减小数量: " + ramErrors.size() + "台" + "\n";
 
-        Collections.sort(ramErrors, new Comparator<RamError>() {
-            @Override
-            public int compare(RamError o1, RamError o2) {
-                if(o1.getId().compareTo(o2.getId())>=1){
-                    return 1;
-                }else{
-                    return -1;
+        if (ramErrors.size() > 0) {
+            Collections.sort(ramErrors, new Comparator<RamError>() {
+                @Override
+                public int compare(RamError o1, RamError o2) {
+                    if (o1.getId().compareTo(o2.getId()) >= 1) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 }
-            }
-        });
+            });
+        }
         for (RamError ramError : ramErrors) {
             str = str + ramError + "\n";
         }
 
         str = str + "Disabled数量: " + enableList.size() + "台" + "\n";
-
-        Collections.sort(enableList, new Comparator<Enable>() {
-            @Override
-            public int compare(Enable o1, Enable o2) {
-                if(o1.getId().compareTo(o2.getId())>=1){
-                    return 1;
-                }else{
-                    return -1;
+        if (enableList.size() > 0) {
+            Collections.sort(enableList, new Comparator<Enable>() {
+                @Override
+                public int compare(Enable o1, Enable o2) {
+                    if (o1.getId().compareTo(o2.getId()) >= 1) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 }
-            }
-        });
+            });
+        }
         for (Enable enable : enableList) {
             str = str + enable + "\n";
         }
 
         System.out.println(str);
-        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        //httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }

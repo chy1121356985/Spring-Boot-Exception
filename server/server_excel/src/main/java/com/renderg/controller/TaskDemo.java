@@ -40,10 +40,10 @@ public class TaskDemo {
         System.out.println("我是每五秒触发一次：cron5s>>>" + new Date());
     }*/
 
-    @Scheduled(cron = "0 50 17 * * ?")
+   /* @Scheduled(cron = "0 30 8 * * ?")
     public void cron12pm() {
         // cron表达式的方式执行任务：每天中午12点触发一次
         System.out.println("我是每天中午12点触发一次：cron12pm>>>" + new Date());
-    }
+    }*/
 
 }

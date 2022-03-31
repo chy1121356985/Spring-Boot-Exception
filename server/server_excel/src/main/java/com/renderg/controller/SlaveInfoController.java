@@ -28,7 +28,7 @@ public class SlaveInfoController {
     private HttpUtils httpUtils;
 
     @GetMapping("/find")
-    @Scheduled(cron = "0 30 8 * * ?")
+    @Scheduled(cron = "0 45 8 * * ?")
     public R findAll() {
 
         String msg = infoService.findSlave();
