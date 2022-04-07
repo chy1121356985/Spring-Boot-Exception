@@ -213,7 +213,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str);
-        //httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }

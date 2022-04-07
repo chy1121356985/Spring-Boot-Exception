@@ -1,6 +1,7 @@
 package com.renderg.controller;
 
 
+import com.renderg.service.RamService;
 import com.renderg.service.SlaveInfoService;
 import com.renderg.util.HttpUtils;
 import com.renderg.util.R;
@@ -22,18 +23,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/exception/slave-info")
 public class SlaveInfoController {
 
-    @Autowired()
+    @Autowired
     private SlaveInfoService infoService;
 
-    private HttpUtils httpUtils;
+    @Autowired
+    private RamService ramService;
 
     @GetMapping("/find")
-    @Scheduled(cron = "0 45 8 * * ?")
+    @Scheduled(cron = "0 30 8 * * ?")
     public R findAll() {
 
         String msg = infoService.findSlave();
         return R.ok().data("msg", msg);
     }
+
+
+    @GetMapping("/findRam")
+    @Scheduled(fixedRate = 3600000)
+    public R findRam(){
+        String ram = ramService.findRam();
+        return R.ok().data("msg",ram);
+    }
+
+
+
+
 
 }
 
