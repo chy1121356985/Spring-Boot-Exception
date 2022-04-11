@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -37,6 +38,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         HashMap<String, List<Enable>> enableMap = new HashMap<>();
         ArrayList<Enable> enableList = new ArrayList<>();
         ArrayList<RamError> ramErrors = new ArrayList<>();
+        ArrayList<Info> infoList = new ArrayList<>();
 
         //获取接口请求转换json类型
         String forest = httpUtils.forest();
@@ -52,19 +54,41 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 String diskStr = info.get(i).getDiskStr();
                 int indexOf = diskStr.indexOf("(");
                 int indexOf1 = diskStr.indexOf("o");
+                int indexOf2 = diskStr.indexOf(",");
+                int indexOf3 = diskStr.indexOf("D");
                 Boolean end = true;
                 Hardware hardware = new Hardware();
                 DiskStr diskStrs = new DiskStr();
                 Enable enable = new Enable();
                 RamError ramError = new RamError();
                 SlaveInfo slaveInfo = new SlaveInfo();
+                Info infoD = new Info();
                 String substring = null;
                 int diskStrC = 0;
 
                 //判断是否是无效ID，true直接跳过处理。
-                if ("rendergmaster".equals(info.get(i).getId())) {
+                if ("w-16-026".equals(info.get(i).getId())) {
                     continue;
                 }
+                if (!Pattern.matches("w-.*", info.get(i).getId())) {
+                    continue;
+                }
+
+
+                try {
+                    String dSubstring = diskStr.substring(indexOf2 + 2, indexOf3 - 7);
+                    int diskStrD = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf(".")));
+                    if (diskStrD <= 9) {
+                        infoD.setDiskStr(dSubstring);
+                        infoD.setId(info.get(i).getId());
+                        infoList.add(infoD);
+                        end = false;
+
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage() + ":" + diskStr);
+                }
+
 
                 try {
                     substring = diskStr.substring(indexOf + 1, indexOf1 - 4);
@@ -72,7 +96,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                     if (diskStrC <= 9) {
                         hardware.setDiskStr(info.get(i).getDiskStr());
                         diskStrs.setId(info.get(i).getId());
-                        diskStrs.setDiskStr(info.get(i).getDiskStr());
+                        diskStrs.setDiskStr(substring);
                         diskStrList.add(diskStrs);
 
                         end = false;
@@ -113,22 +137,29 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                     }
                 }*/
 
-                //运行内存是否小于百分之65
+                //运行内存是否小于
                 QueryWrapper<SlaveInfo> wrapper = new QueryWrapper<>();
                 wrapper.eq("id", info.get(i).getId());
                 SlaveInfo slave = baseMapper.selectOne(wrapper);
 
                 try {
-                    if (slave.getArm() > info.get(i).getRam()) {
-                        ramError.setAgoRam(slave.getArm());
-                        ramError.setId(info.get(i).getId());
-                        ramError.setRam(info.get(i).getRam());
-                        ramErrors.add(ramError);
+                    if (slave.getArm() > 34359738368L) {
+                        if (slave.getArm() - 5368709120L >= info.get(i).getRam()) {
+                            ramError.setAgoRam(slave.getArm());
+                            ramError.setId(info.get(i).getId());
+                            ramError.setRam(info.get(i).getRam());
+                            ramErrors.add(ramError);
 
-                        hardware.setRam(info.get(i).getRam());
-                        hardware.setRamFree(info.get(i).getRamFree());
-                        end = false;
+                            hardware.setRam(info.get(i).getRam());
+                            hardware.setRamFree(info.get(i).getRamFree());
+                            end = false;
+                        }
                     }
+                    long ram = info.get(i).getRam() / 1073741824;
+                    if (62 <= ram & ram >= 66) {
+
+                    }
+
                 } catch (Exception e) {
                     System.out.println(e.getMessage() + ":" + info.get(i).getId());
                 }
@@ -155,7 +186,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 //        System.out.println(ramMap);
 //        System.out.println(enableMap);
 
-        int size = diskStrList.size() + ramErrors.size() + enableList.size();
+        int size = diskStrList.size() + ramErrors.size() + enableList.size() + infoList.size();
         //对id进行排序
         Collections.sort(diskStrList, new Comparator<DiskStr>() {
             @Override
@@ -171,13 +202,32 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
         for (DiskStr diskStr : diskStrList) {
             try {
-                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr().substring(diskStr.getDiskStr().indexOf("(") + 1, diskStr.getDiskStr().indexOf("o") - 1) + "\n";
+                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskStr);
             }
         }
 
-        str = str + "内存减小数量: " + ramErrors.size() + "台" + "\n";
+        str = str + "D盘可用空间不足10GB:" + infoList.size() + "台" + "\n";
+
+        if (infoList.size() > 0) {
+            Collections.sort(infoList, new Comparator<Info>() {
+                @Override
+                public int compare(Info o1, Info o2) {
+                    if (o1.getId().compareTo(o2.getId()) >= 1) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+        }
+        for (Info info : infoList) {
+            str = str + "ID:" + info.getId() + ";D盘可用存储:" + info.getDiskStr() + "GB" + "\n";
+        }
+
+
+        str = str + "运行内存减小数量: " + ramErrors.size() + "台" + "\n";
 
         if (ramErrors.size() > 0) {
             Collections.sort(ramErrors, new Comparator<RamError>() {
@@ -192,7 +242,9 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             });
         }
         for (RamError ramError : ramErrors) {
-            str = str + ramError + "\n";
+            long agoRam = ramError.getAgoRam() / 1073741824 + 1;
+            long ram = ramError.getRam() / 1073741824;
+            str = str + "ID:" + ramError.getId() + " 昨日内存:" + agoRam + "GB 实时内存:" + ram + "GB" + "\n";
         }
 
         str = str + "Disabled数量: " + enableList.size() + "台" + "\n";
