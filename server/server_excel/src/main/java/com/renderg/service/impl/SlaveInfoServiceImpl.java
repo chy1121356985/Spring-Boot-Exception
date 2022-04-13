@@ -202,7 +202,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
         for (DiskStr diskStr : diskStrList) {
             try {
-                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "\n";
+                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "GB" + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskStr);
             }
