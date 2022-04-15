@@ -9,11 +9,9 @@ import com.renderg.util.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -94,7 +92,7 @@ public class RamServiceImp implements RamService {
                 str = str + "ID:" + info.getId() + " 可用内存:" + RamFree + "GB" + " 内存总量:" + Ram + "GB" + " 占用率:" + format + "%" + "\n";
             }
             httpUtils.feishu(str, "oc_aff73dae5b339595bf52d611d05a8abf");
-            System.out.println(str);
+            System.out.println(str+new Date());
         }
 
         return str;

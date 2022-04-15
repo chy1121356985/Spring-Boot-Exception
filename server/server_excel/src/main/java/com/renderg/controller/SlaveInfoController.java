@@ -30,7 +30,11 @@ public class SlaveInfoController {
     private RamService ramService;
 
     @GetMapping("/find")
+    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 0 6 * * ?")
+    @Scheduled(cron = "0 0 7 * * ?")
     @Scheduled(cron = "0 30 8 * * ?")
+    @Scheduled(cron = "0 0 14 * * ?")
     public R findAll() {
 
         String msg = infoService.findSlave();

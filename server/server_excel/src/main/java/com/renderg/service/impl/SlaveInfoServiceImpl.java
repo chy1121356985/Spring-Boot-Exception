@@ -76,32 +76,63 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
 
                 try {
-                    String dSubstring = diskStr.substring(indexOf2 + 2, indexOf3 - 7);
-                    int diskStrD = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf(".")));
-                    if (diskStrD <= 9) {
+                    String dSubstring = diskStr.substring(indexOf2 + 2, indexOf3 - 4);
+                    if (!dSubstring.contains("GB")) {
                         infoD.setDiskStr(dSubstring);
                         infoD.setId(info.get(i).getId());
                         infoList.add(infoD);
-                        end = false;
+                    } else {
+                        if (dSubstring.contains(".")) {
+                            int diskStrD = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf(".")));
+                            if (diskStrD <= 9) {
+                                infoD.setDiskStr(dSubstring);
+                                infoD.setId(info.get(i).getId());
+                                infoList.add(infoD);
+                            }
+                        } else {
+                            int diskStrZ = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf("G") - 1));
+                            if (diskStrZ <= 9) {
+                                infoD.setDiskStr(dSubstring);
+                                infoD.setId(info.get(i).getId());
+                                infoList.add(infoD);
+                            }
+                        }
+
 
                     }
+
                 } catch (Exception e) {
-                    System.out.println(e.getMessage() + ":" + diskStr);
+                    System.out.println(e.getMessage() + ":" + diskStr + "DD");
                 }
 
 
                 try {
-                    substring = diskStr.substring(indexOf + 1, indexOf1 - 4);
-                    diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf(".")));
-                    if (diskStrC <= 9) {
+                    substring = diskStr.substring(indexOf + 1, indexOf1 - 1);
+                    if (!substring.contains("GB")) {
                         hardware.setDiskStr(info.get(i).getDiskStr());
                         diskStrs.setId(info.get(i).getId());
                         diskStrs.setDiskStr(substring);
                         diskStrList.add(diskStrs);
-
-                        end = false;
-
+                    } else {
+                        if (substring.contains(".")) {
+                            diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf(".")));
+                            if (diskStrC <= 9) {
+                                hardware.setDiskStr(info.get(i).getDiskStr());
+                                diskStrs.setId(info.get(i).getId());
+                                diskStrs.setDiskStr(substring);
+                                diskStrList.add(diskStrs);
+                            }
+                        } else {
+                            diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf("G") - 1));
+                            if (diskStrC <= 9) {
+                                hardware.setDiskStr(info.get(i).getDiskStr());
+                                diskStrs.setId(info.get(i).getId());
+                                diskStrs.setDiskStr(substring);
+                                diskStrList.add(diskStrs);
+                            }
+                        }
                     }
+
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage() + ":" + diskStr);
@@ -202,7 +233,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
         for (DiskStr diskStr : diskStrList) {
             try {
-                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "GB" + "\n";
+                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskStr);
             }
@@ -223,7 +254,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             });
         }
         for (Info info : infoList) {
-            str = str + "ID:" + info.getId() + ";D盘可用存储:" + info.getDiskStr() + "GB" + "\n";
+            str = str + "ID:" + info.getId() + ";D盘可用存储:" + info.getDiskStr() + "\n";
         }
 
 
@@ -264,7 +295,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             str = str + enable + "\n";
         }
 
-        System.out.println(str);
+        System.out.println(str+new Date());
         httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
