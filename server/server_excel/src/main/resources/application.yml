@@ -1,6 +1,6 @@
 #修改D端口号默认8080
 server:
-  port: 8088
+  port: 8066
   tomcat:
     remoteip:
       host-header: 0.0.0.0
@@ -16,10 +16,15 @@ spring:
   profiles:
     active: dev
     # Mysql数据库连接
+  data:
+    mongodb:
+      host: 10.6.1.252
+      port: 27100
+      database: deadline10db
   datasource:
-    username: root
-    password: root
-    url: jdbc:mysql://192.168.128.133:3306/chydb?serverTimezone=GMT%2B8
+    username: chy
+    password: renderg
+    url: jdbc:mysql://10.6.6.151:3306/chy?serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:

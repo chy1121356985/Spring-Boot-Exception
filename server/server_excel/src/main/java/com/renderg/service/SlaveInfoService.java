@@ -14,4 +14,5 @@ import com.renderg.pojo.SlaveInfo;
 public interface SlaveInfoService extends IService<SlaveInfo> {
     String findSlave();
 
+
 }

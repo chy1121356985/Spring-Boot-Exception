@@ -9,7 +9,6 @@ import com.renderg.util.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -54,18 +53,23 @@ public class RamServiceImp implements RamService {
 
 
                 if (info.get(i).getStat() == 2) {
-                    try {
-                        if (info.get(i).getRam() * 0.70 >= info.get(i).getRamFree()) {
-                            inf.setId(info.get(i).getId());
-                            inf.setRam(info.get(i).getRam());
-                            inf.setRamFree(info.get(i).getRamFree());
-                            inf.setStat(info.get(i).getStat());
-                            infoList.add(inf);
+                    if (settings.get(i).getEnable()) {
+                        if (settings.get(i).getCmmt().length() == 0) {
+                            try {
+                                if (info.get(i).getRam() * 0.70 >= info.get(i).getRamFree()) {
+                                    inf.setId(info.get(i).getId());
+                                    inf.setRam(info.get(i).getRam());
+                                    inf.setRamFree(info.get(i).getRamFree());
+                                    inf.setStat(info.get(i).getStat());
+                                    infoList.add(inf);
 
+                                }
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage() + ":" + info.get(i).getRam() + info.get(i).getRamFree());
+                            }
                         }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage() + ":" + info.get(i).getRam() + info.get(i).getRamFree());
                     }
+
                 }
             }
         }
@@ -92,7 +96,7 @@ public class RamServiceImp implements RamService {
                 str = str + "ID:" + info.getId() + " 可用内存:" + RamFree + "GB" + " 内存总量:" + Ram + "GB" + " 占用率:" + format + "%" + "\n";
             }
             httpUtils.feishu(str, "oc_aff73dae5b339595bf52d611d05a8abf");
-            System.out.println(str+new Date());
+            System.out.println(str + new Date());
         }
 
         return str;
