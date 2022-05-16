@@ -64,51 +64,76 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             String substring = null;
             int diskStrC = 0;
 
-            //判断是否是无效ID，true直接跳过处理。
+
             if ("w-16-026".equals(info.get(i).getId())) {
                 continue;
             }
+            //判断是否是无效ID，true直接跳过处理。
             if (!Pattern.matches("w-.*", info.get(i).getId())) {
                 continue;
             }
 
             //盘符列为空或者是-1直接报出
-            if (info.get(i).getDiskStr().length() <= 2) {
-                diskStrs.setId(info.get(i).getId());
-                diskStrs.setDiskStr(info.get(i).getDiskStr());
-                diskStrList.add(diskStrs);
-            }
-
             //对C盘进行筛选 不足10GB
-            try {
-                substring = diskStr.substring(indexOf + 1, indexOf1 - 1);
-                if (!substring.contains("TB")) {
-                    if (!substring.contains("GB")) {
-                        diskStrs.setId(info.get(i).getId());
-                        diskStrs.setDiskStr(substring);
-                        diskStrList.add(diskStrs);
-                    } else {
-                        if (substring.contains(".")) {
-                            diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf(".")));
-                            if (diskStrC <= 9) {
+            if (info.get(i).getDiskStr().length() <= 12) {
+                if (info.get(i).getDiskStr().length() <= 2) {
+                    diskStrs.setId(info.get(i).getId());
+                    diskStrs.setDiskStr(info.get(i).getDiskStr());
+                    diskStrList.add(diskStrs);
+                } else {
+                    try {
+                        if (!info.get(i).getDiskStr().contains("TB")) {
+                            if (!info.get(i).getDiskStr().contains("GB")) {
                                 diskStrs.setId(info.get(i).getId());
-                                diskStrs.setDiskStr(substring);
+                                diskStrs.setDiskStr(info.get(i).getDiskStr());
                                 diskStrList.add(diskStrs);
+                            } else {
+                                int intC = Integer.parseInt(info.get(i).getDiskStr().substring(0, info.get(i).getDiskStr().indexOf(".")));
+                                if (intC <= 9) {
+                                    diskStrs.setId(info.get(i).getId());
+                                    diskStrs.setDiskStr(info.get(i).getDiskStr());
+                                    diskStrList.add(diskStrs);
+                                }
                             }
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            } else {
+                try {
+                    substring = diskStr.substring(indexOf + 1, indexOf1 - 1);
+                    if (!substring.contains("TB")) {
+                        if (!substring.contains("GB")) {
+                            diskStrs.setId(info.get(i).getId());
+                            diskStrs.setDiskStr(substring);
+                            diskStrList.add(diskStrs);
                         } else {
-                            diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf("G") - 1));
-                            if (diskStrC <= 9) {
-                                diskStrs.setId(info.get(i).getId());
-                                diskStrs.setDiskStr(substring);
-                                diskStrList.add(diskStrs);
+                            if (substring.contains(".")) {
+                                diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf(".")));
+                                if (diskStrC <= 9) {
+                                    diskStrs.setId(info.get(i).getId());
+                                    diskStrs.setDiskStr(substring);
+                                    diskStrList.add(diskStrs);
+                                }
+                            } else {
+                                diskStrC = Integer.parseInt(substring.substring(0, substring.indexOf("G") - 1));
+                                if (diskStrC <= 9) {
+                                    diskStrs.setId(info.get(i).getId());
+                                    diskStrs.setDiskStr(substring);
+                                    diskStrList.add(diskStrs);
+                                }
                             }
                         }
                     }
-                }
 
-            } catch (Exception e) {
-                System.out.println(e.getMessage() + ":" + diskStr + "--- " + info.get(i).getId());
+                } catch (Exception e) {
+                    System.out.println(e.getMessage() + ":" + diskStr + "--- " + info.get(i).getId());
+                }
             }
+
 
             //对D盘进行筛选 不足10GB
             try {
@@ -175,17 +200,21 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
             Enable enable = new Enable();
             //是否被标记修改
-            if (settings.get(i).getCmmt().length() == 0) {
-                Integer stat = mongoTemplate.findById(settings.get(i).getId(), SlaveInfoMongo.class).getStat();
-                System.out.println(stat + "sssssss");
-                if (stat == 0 || stat == 3 || stat == 4) {
-                    if (!settings.get(i).getEnable()) {
-                        enable.setId(settings.get(i).getId());
-                        enable.setEnable(settings.get(i).getEnable());
-                        enable.setCmmt(settings.get(i).getCmmt());
-                        enableList.add(enable);
+            try {
+                if (settings.get(i).getCmmt().length() == 0) {
+                    Integer stat = mongoTemplate.findById(settings.get(i).getId(), SlaveInfoMongo.class).getStat();
+                    System.out.println(stat + "sssssss");
+                    if (stat == 0 || stat == 3 || stat == 4) {
+                        if (!settings.get(i).getEnable()) {
+                            enable.setId(settings.get(i).getId());
+                            enable.setEnable(settings.get(i).getEnable());
+                            enable.setCmmt(settings.get(i).getCmmt());
+                            enableList.add(enable);
+                        }
                     }
                 }
+            } catch (Exception e) {
+                System.out.println(e.getMessage() + "异常标记" + settings.get(i).getId());
             }
         }
 
