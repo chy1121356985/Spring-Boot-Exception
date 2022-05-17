@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renderg.entity.SlaveInfoMongo;
 import com.renderg.entity.SlaveSettingsMongo;
 import com.renderg.mapper.SlaveInfoMapper;
-import com.renderg.pojo.DiskStr;
-import com.renderg.pojo.Enable;
-import com.renderg.pojo.RamError;
-import com.renderg.pojo.SlaveInfo;
+import com.renderg.pojo.*;
 import com.renderg.service.SlaveInfoService;
 import com.renderg.util.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +39,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         ArrayList<Enable> enableList = new ArrayList<>();
         ArrayList<RamError> ramErrors = new ArrayList<>();
         ArrayList<SlaveInfoMongo> infoList = new ArrayList<>();
+        ArrayList<DiskOther> diskOthers = new ArrayList<>();
 
 
         List<SlaveInfoMongo> info = mongoTemplate.findAll(SlaveInfoMongo.class);
@@ -61,6 +59,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             DiskStr diskStrs = new DiskStr();
             RamError ramError = new RamError();
             SlaveInfo slaveInfo = new SlaveInfo();
+            DiskOther diskOther = new DiskOther();
             String substring = null;
             int diskStrC = 0;
 
@@ -167,6 +166,17 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             }
 
 
+            //非c、d盘检查
+            try {
+                if (info.get(i).getDiskStr().length() > 55) {
+                    diskOther.setId(info.get(i).getId());
+                    diskOther.setDiskStr(info.get(i).getDiskStr());
+                    diskOthers.add(diskOther);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             //运行内存是否变小大于5GB
             QueryWrapper<SlaveInfo> wrapper = new QueryWrapper<>();
             wrapper.eq("id", info.get(i).getId());
@@ -218,7 +228,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             }
         }
 
-        int size = diskStrList.size() + ramErrors.size() + enableList.size() + infoList.size();
+        int size = diskStrList.size() + ramErrors.size() + enableList.size() + infoList.size() + diskOthers.size();
         //对id进行排序
         Collections.sort(diskStrList, new Comparator<DiskStr>() {
             @Override
@@ -256,6 +266,25 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
         for (SlaveInfoMongo infos : infoList) {
             str = str + "ID:" + infos.getId() + ";D盘可用存储:" + infos.getDiskStr() + "\n";
+        }
+
+        str = str + "存在非C、D盘符的节点:" + diskOthers.size() + "台" + "\n";
+
+        if (diskOthers.size() > 0) {
+            Collections.sort(diskOthers, new Comparator<DiskOther>() {
+                @Override
+                public int compare(DiskOther o1, DiskOther o2) {
+                    if (o1.getId().compareTo(o2.getId()) >= 1) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+        }
+
+        for (DiskOther diskOther : diskOthers) {
+            str = str + "ID:" + diskOther.getId() + "\n";
         }
 
 
@@ -297,7 +326,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        //httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }
