@@ -2,6 +2,7 @@ package com.renderg.task;
 
 import com.renderg.service.RamService;
 import com.renderg.service.SlaveInfoService;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,9 @@ public class testTask {
     @Autowired
     private RamService ramService;
 
+
+
+//    @XxlJob("findAll")
     @Scheduled(cron = "0 0 6 * * ?")
     @Scheduled(cron = "0 0 7 * * ?")
     @Scheduled(cron = "0 30 8 * * ?")
@@ -26,7 +30,8 @@ public class testTask {
     }
 
     //@Scheduled(fixedRate = 3600000)
-    void findRam(){
+    @XxlJob(("findRam"))
+    void findRam() throws Exception{
         ramService.findRam();
 
     }

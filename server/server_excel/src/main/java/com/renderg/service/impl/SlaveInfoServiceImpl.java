@@ -168,11 +168,14 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
             //非c、d盘检查
             try {
-                if (info.get(i).getDiskStr().length() > 55) {
-                    diskOther.setId(info.get(i).getId());
-                    diskOther.setDiskStr(info.get(i).getDiskStr());
-                    diskOthers.add(diskOther);
+                if (settings.get(i).getEnable()) {
+                    if (info.get(i).getDiskStr().length() > 55) {
+                        diskOther.setId(info.get(i).getId());
+                        diskOther.setDiskStr(info.get(i).getDiskStr());
+                        diskOthers.add(diskOther);
+                    }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -326,7 +329,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        //httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }

@@ -14,7 +14,7 @@ public class tes {
 
     public static void main(String[] args) {
 
-        String str="977.97 GB (39.950 GB on C:\\, 62.838 GB on D:\\, 875.0)";
+        String str="30.753 GB (15.643 GB on C:\\, 15.110 GB on D:\\)";
         System.out.println(str.length());
 
 
