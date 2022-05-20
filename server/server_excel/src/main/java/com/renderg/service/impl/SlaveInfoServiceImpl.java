@@ -63,10 +63,6 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             String substring = null;
             int diskStrC = 0;
 
-
-            if ("w-16-026".equals(info.get(i).getId())) {
-                continue;
-            }
             //判断是否是无效ID，true直接跳过处理。
             if (!Pattern.matches("w-.*", info.get(i).getId())) {
                 continue;
@@ -168,7 +164,10 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
             //非c、d盘检查
             try {
-                if (settings.get(i).getEnable()) {
+                //获取enable字段
+                Boolean enable = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class).getEnable();
+                //未标记检查
+                if (enable) {
                     if (info.get(i).getDiskStr().length() > 55) {
                         diskOther.setId(info.get(i).getId());
                         diskOther.setDiskStr(info.get(i).getDiskStr());
@@ -329,7 +328,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        //httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }
