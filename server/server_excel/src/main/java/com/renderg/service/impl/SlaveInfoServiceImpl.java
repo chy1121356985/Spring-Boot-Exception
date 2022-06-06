@@ -38,10 +38,10 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         List<DiskStr> diskStrList = new ArrayList<>();
         ArrayList<Enable> enableList = new ArrayList<>();
         ArrayList<RamError> ramErrors = new ArrayList<>();
-        ArrayList<SlaveInfoMongo> infoList = new ArrayList<>();
         ArrayList<DiskOther> diskOthers = new ArrayList<>();
         ArrayList<DiskStr> diskStrLists = new ArrayList<>();
-        ArrayList<SlaveInfoMongo> infoLists = new ArrayList<>();
+//        ArrayList<SlaveInfoMongo> infoLists = new ArrayList<>();
+//        ArrayList<SlaveInfoMongo> infoList = new ArrayList<>();
 
 
         List<SlaveInfoMongo> info = mongoTemplate.findAll(SlaveInfoMongo.class);
@@ -54,10 +54,10 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             String diskStr = info.get(i).getDiskStr();
             int indexOf = diskStr.indexOf("(");
             int indexOf1 = diskStr.indexOf("o");
-            int indexOf2 = diskStr.indexOf(",");
-            int indexOf3 = diskStr.indexOf("D");
+//            int indexOf2 = diskStr.indexOf(",");
+//            int indexOf3 = diskStr.indexOf("D");
 
-            SlaveInfoMongo slaveInfoMongo = new SlaveInfoMongo();
+//            SlaveInfoMongo slaveInfoMongo = new SlaveInfoMongo();
             DiskStr diskStrs = new DiskStr();
             RamError ramError = new RamError();
             SlaveInfo slaveInfo = new SlaveInfo();
@@ -133,35 +133,35 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
 
             //对D盘进行筛选 不足10GB
-            try {
-                String dSubstring = diskStr.substring(indexOf2 + 2, indexOf3 - 4);
-                if (!dSubstring.contains("TB")) {
-                    if (!dSubstring.contains("GB")) {
-                        slaveInfoMongo.setDiskStr(dSubstring);
-                        slaveInfoMongo.setId(info.get(i).getId());
-                        infoList.add(slaveInfoMongo);
-                    } else {
-                        if (dSubstring.contains(".")) {
-                            int diskStrD = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf(".")));
-                            if (diskStrD <= 9) {
-                                slaveInfoMongo.setDiskStr(dSubstring);
-                                slaveInfoMongo.setId(info.get(i).getId());
-                                infoList.add(slaveInfoMongo);
-                            }
-                        } else {
-                            int diskStrZ = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf("G") - 1));
-                            if (diskStrZ <= 9) {
-                                slaveInfoMongo.setDiskStr(dSubstring);
-                                slaveInfoMongo.setId(info.get(i).getId());
-                                infoList.add(slaveInfoMongo);
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage() + ":" + diskStr + "DD" + info.get(i).getId());
-            }
+//            try {
+//                String dSubstring = diskStr.substring(indexOf2 + 2, indexOf3 - 4);
+//                if (!dSubstring.contains("TB")) {
+//                    if (!dSubstring.contains("GB")) {
+//                        slaveInfoMongo.setDiskStr(dSubstring);
+//                        slaveInfoMongo.setId(info.get(i).getId());
+//                        infoList.add(slaveInfoMongo);
+//                    } else {
+//                        if (dSubstring.contains(".")) {
+//                            int diskStrD = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf(".")));
+//                            if (diskStrD <= 9) {
+//                                slaveInfoMongo.setDiskStr(dSubstring);
+//                                slaveInfoMongo.setId(info.get(i).getId());
+//                                infoList.add(slaveInfoMongo);
+//                            }
+//                        } else {
+//                            int diskStrZ = Integer.parseInt(dSubstring.substring(0, dSubstring.indexOf("G") - 1));
+//                            if (diskStrZ <= 9) {
+//                                slaveInfoMongo.setDiskStr(dSubstring);
+//                                slaveInfoMongo.setId(info.get(i).getId());
+//                                infoList.add(slaveInfoMongo);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage() + ":" + diskStr + "DD" + info.get(i).getId());
+//            }
 
 
             //非c、d盘检查
@@ -232,7 +232,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             }
         }
 
-        int size = diskStrList.size() + ramErrors.size() + enableList.size() + infoList.size() + diskOthers.size();
+        int size = diskStrList.size() + ramErrors.size() + enableList.size() + diskOthers.size();
         //对id进行排序
 //        Collections.sort(diskStrList, new Comparator<DiskStr>() {
 //            @Override
@@ -289,7 +289,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             }
         }
 
-        str = str + "D盘可用空间不足10GB:" + infoList.size() + "台" + "\n";
+//        str = str + "D盘可用空间不足10GB:" + infoList.size() + "台" + "\n";
 
 //        if (infoList.size() > 0) {
 //            Collections.sort(infoList, new Comparator<SlaveInfoMongo>() {
@@ -305,44 +305,44 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 //        }
 
 
-        List<SlaveInfoMongo> SlaveInfoMongoBytes = new ArrayList<>();
-        List<SlaveInfoMongo> SlaveInfoMongoMB = new ArrayList<>();
-        List<SlaveInfoMongo> SlaveInfoMongoGB = new ArrayList<>();
-        ArrayList<SlaveInfoMongo> SlaveInfoMongoNull = new ArrayList<>();
-
-        for (SlaveInfoMongo infoMongo : infoList) {
-            if (infoMongo.getDiskStr().contains("Bytes")) {
-                SlaveInfoMongoBytes.add(infoMongo);
-            } else if (infoMongo.getDiskStr().length() == 0) {
-                SlaveInfoMongoNull.add(infoMongo);
-            } else if (infoMongo.getDiskStr().contains("MB")) {
-                SlaveInfoMongoMB.add(infoMongo);
-            } else if (infoMongo.getDiskStr().contains("GB")) {
-                SlaveInfoMongoGB.add(infoMongo);
-            }
-        }
-
-        Collections.sort(SlaveInfoMongoBytes);
-        Collections.sort(SlaveInfoMongoMB);
-        Collections.sort(SlaveInfoMongoGB);
-
-        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoNull) {
-            infoLists.add(InfoMongo);
-        }
-        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoBytes) {
-            infoLists.add(InfoMongo);
-        }
-        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoMB) {
-            infoLists.add(InfoMongo);
-        }
-        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoGB) {
-            infoLists.add(InfoMongo);
-        }
-
-
-        for (SlaveInfoMongo infos : infoLists) {
-            str = str + "ID:" + infos.getId() + ";D盘可用存储:" + infos.getDiskStr() + "\n";
-        }
+//        List<SlaveInfoMongo> SlaveInfoMongoBytes = new ArrayList<>();
+//        List<SlaveInfoMongo> SlaveInfoMongoMB = new ArrayList<>();
+//        List<SlaveInfoMongo> SlaveInfoMongoGB = new ArrayList<>();
+//        ArrayList<SlaveInfoMongo> SlaveInfoMongoNull = new ArrayList<>();
+//
+//        for (SlaveInfoMongo infoMongo : infoList) {
+//            if (infoMongo.getDiskStr().contains("Bytes")) {
+//                SlaveInfoMongoBytes.add(infoMongo);
+//            } else if (infoMongo.getDiskStr().length() == 0) {
+//                SlaveInfoMongoNull.add(infoMongo);
+//            } else if (infoMongo.getDiskStr().contains("MB")) {
+//                SlaveInfoMongoMB.add(infoMongo);
+//            } else if (infoMongo.getDiskStr().contains("GB")) {
+//                SlaveInfoMongoGB.add(infoMongo);
+//            }
+//        }
+//
+//        Collections.sort(SlaveInfoMongoBytes);
+//        Collections.sort(SlaveInfoMongoMB);
+//        Collections.sort(SlaveInfoMongoGB);
+//
+//        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoNull) {
+//            infoLists.add(InfoMongo);
+//        }
+//        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoBytes) {
+//            infoLists.add(InfoMongo);
+//        }
+//        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoMB) {
+//            infoLists.add(InfoMongo);
+//        }
+//        for (SlaveInfoMongo InfoMongo : SlaveInfoMongoGB) {
+//            infoLists.add(InfoMongo);
+//        }
+//
+//
+//        for (SlaveInfoMongo infos : infoLists) {
+//            str = str + "ID:" + infos.getId() + ";D盘可用存储:" + infos.getDiskStr() + "\n";
+//        }
 
         str = str + "存在非C、D盘符的节点:" + diskOthers.size() + "台" + "\n";
 
