@@ -24,15 +24,21 @@ public class DiskStr implements Comparable<DiskStr> {
             if (this.diskStr.contains("Bytes")) {
                 int anInt = Double.valueOf(this.diskStr.substring(0, this.diskStr.indexOf("B") - 1)).intValue();
                 int anInt1 = Double.valueOf(disk.getDiskStr().substring(0, disk.getDiskStr().indexOf("B") - 1)).intValue();
-                return anInt - anInt1;
+                int by= anInt - anInt1;
+                System.out.println("byte:"+by);
+                return by;
             } else if (disk.getDiskStr().contains("GB")) {
                 int anInt = Double.valueOf(this.diskStr.substring(0, this.diskStr.indexOf("G") - 1)).intValue();
                 int anInt1 = Double.valueOf(disk.getDiskStr().substring(0, disk.getDiskStr().indexOf("G") - 1)).intValue();
-                return anInt - anInt1;
+                int gb=anInt - anInt1;
+                System.out.println("gb:"+gb+"---"+this.diskStr+"--"+disk.getDiskStr());
+                return gb;
             } else if (disk.getDiskStr().contains("MB")) {
                 int anInt = Double.valueOf(this.diskStr.substring(0, this.diskStr.indexOf("M") - 1)).intValue();
                 int anInt1 = Double.valueOf(disk.getDiskStr().substring(0, disk.getDiskStr().indexOf("M") - 1)).intValue();
-                return anInt - anInt1;
+                int mb=anInt - anInt1;
+                System.out.println("mb"+mb);
+                return mb;
             }
 
         } catch (Exception e) {

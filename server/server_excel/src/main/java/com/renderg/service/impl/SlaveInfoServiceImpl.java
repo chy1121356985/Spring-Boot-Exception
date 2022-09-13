@@ -69,35 +69,32 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             if (!Pattern.matches("w-.*", info.get(i).getId())) {
                 continue;
             }
+            if (info.get(i).getDiskStr().length()<=2){
+                continue;
+            }
 
             //盘符列为空或者是-1直接报出
             //对C盘进行筛选 不足10GB
             if (info.get(i).getDiskStr().length() <= 12) {
-                if (info.get(i).getDiskStr().length() <= 2) {
-                    diskStrs.setId(info.get(i).getId());
-                    diskStrs.setDiskStr(info.get(i).getDiskStr());
-                    diskStrList.add(diskStrs);
-                } else {
-                    try {
-                        if (!info.get(i).getDiskStr().contains("TB")) {
-                            if (!info.get(i).getDiskStr().contains("GB")) {
+                try {
+                    if (!info.get(i).getDiskStr().contains("TB")) {
+                        if (!info.get(i).getDiskStr().contains("GB")) {
+                            diskStrs.setId(info.get(i).getId());
+                            diskStrs.setDiskStr(info.get(i).getDiskStr());
+                            diskStrList.add(diskStrs);
+                        } else {
+                            int intC = Integer.parseInt(info.get(i).getDiskStr().substring(0, info.get(i).getDiskStr().indexOf(".")));
+                            if (intC <= 9) {
                                 diskStrs.setId(info.get(i).getId());
                                 diskStrs.setDiskStr(info.get(i).getDiskStr());
                                 diskStrList.add(diskStrs);
-                            } else {
-                                int intC = Integer.parseInt(info.get(i).getDiskStr().substring(0, info.get(i).getDiskStr().indexOf(".")));
-                                if (intC <= 9) {
-                                    diskStrs.setId(info.get(i).getId());
-                                    diskStrs.setDiskStr(info.get(i).getDiskStr());
-                                    diskStrList.add(diskStrs);
-                                }
                             }
                         }
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
                     }
-
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getMessage()+"-----");
                 }
+
 
             } else {
                 try {
@@ -178,7 +175,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage()+"----"+info.get(i).getId());
             }
 
             //运行内存是否变小大于5GB
@@ -402,7 +399,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        ///httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }
