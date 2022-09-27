@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -32,6 +33,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
 
     @Override
     public String findSlave() {
@@ -81,12 +83,14 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                         if (!info.get(i).getDiskStr().contains("GB")) {
                             diskStrs.setId(info.get(i).getId());
                             diskStrs.setDiskStr(info.get(i).getDiskStr());
+                            diskStrs.setStat(info.get(i).getStat());
                             diskStrList.add(diskStrs);
                         } else {
                             int intC = Integer.parseInt(info.get(i).getDiskStr().substring(0, info.get(i).getDiskStr().indexOf(".")));
                             if (intC <= 9) {
                                 diskStrs.setId(info.get(i).getId());
                                 diskStrs.setDiskStr(info.get(i).getDiskStr());
+                                diskStrs.setStat(info.get(i).getStat());
                                 diskStrList.add(diskStrs);
                             }
                         }
@@ -103,6 +107,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                         if (!substring.contains("GB")) {
                             diskStrs.setId(info.get(i).getId());
                             diskStrs.setDiskStr(substring);
+                            diskStrs.setStat(info.get(i).getStat());
                             diskStrList.add(diskStrs);
                         } else {
                             if (substring.contains(".")) {
@@ -110,6 +115,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                                 if (diskStrC <= 9) {
                                     diskStrs.setId(info.get(i).getId());
                                     diskStrs.setDiskStr(substring);
+                                    diskStrs.setStat(info.get(i).getStat());
                                     diskStrList.add(diskStrs);
                                 }
                             } else {
@@ -117,6 +123,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                                 if (diskStrC <= 9) {
                                     diskStrs.setId(info.get(i).getId());
                                     diskStrs.setDiskStr(substring);
+                                    diskStrs.setStat(info.get(i).getStat());
                                     diskStrList.add(diskStrs);
                                 }
                             }
@@ -167,7 +174,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 Boolean enable = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class).getEnable();
                 //未标记检查
                 if (enable) {
-                    if (info.get(i).getDiskStr().length() > 55) {
+                    if (info.get(i).getDiskStr().length() > 15) {
                         diskOther.setId(info.get(i).getId());
                         diskOther.setDiskStr(info.get(i).getDiskStr());
                         diskOthers.add(diskOther);
@@ -214,7 +221,6 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             try {
                 if (settings.get(i).getCmmt().length() == 0) {
                     Integer stat = mongoTemplate.findById(settings.get(i).getId(), SlaveInfoMongo.class).getStat();
-                    System.out.println(stat + "sssssss");
                     if (stat == 0 || stat == 3 || stat == 4) {
                         if (!settings.get(i).getEnable()) {
                             enable.setId(settings.get(i).getId());
@@ -245,6 +251,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         List<DiskStr> diskStrMB = new ArrayList<>();
         List<DiskStr> diskStrGB = new ArrayList<>();
         ArrayList<DiskStr> diskStrNull = new ArrayList<>();
+        System.out.println(diskStrList);
 
         for (DiskStr diskStr : diskStrList) {
             if (diskStr.getDiskStr().contains("Bytes")) {
@@ -276,11 +283,12 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
 
-        String str = "异常节点数量:" + size + "\n" + "C盘可用空间不足10GB: " + diskStrList.size() + "台" + "\n";
+        String str = "异常节点数量:" + size + "\n" + "C盘可用空间不足10GB: " + diskStrLists.size() + "台" + "\n";
 
         for (DiskStr diskStr : diskStrLists) {
             try {
-                str = str + "ID:" + diskStr.getId() + ";C盘可用存储:" + diskStr.getDiskStr() + "\n";
+                String stat = TestEnums.showDesc(diskStr.getStat());
+                str = str + "ID:" + diskStr.getId() + ";状态:"+stat+";C盘可用存储:" + diskStr.getDiskStr() + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskStr);
             }
@@ -341,7 +349,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 //            str = str + "ID:" + infos.getId() + ";D盘可用存储:" + infos.getDiskStr() + "\n";
 //        }
 
-        str = str + "存在非C、D盘符的节点:" + diskOthers.size() + "台" + "\n";
+        str = str + "存在非C盘符的节点:" + diskOthers.size() + "台" + "\n";
 
         if (diskOthers.size() > 0) {
             Collections.sort(diskOthers, new Comparator<DiskOther>() {
@@ -399,7 +407,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        ///httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
         return str;
 
     }

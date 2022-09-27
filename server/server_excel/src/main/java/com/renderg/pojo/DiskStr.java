@@ -17,6 +17,9 @@ public class DiskStr implements Comparable<DiskStr> {
     @JsonProperty("DiskStr")
     private String diskStr;
 
+    @JsonProperty("Stat")
+    private Integer stat;
+
 
     @Override
     public int compareTo(DiskStr disk) {

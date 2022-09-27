@@ -32,10 +32,10 @@ public class asset {
 
     public static void main(String[] args) {
 
-        String job_id = "1057083";
-        Integer user_id = 733;
+        String job_id = "1038440";
+        Integer user_id = 2457;
         Integer user_group = Math.round(user_id.intValue() / 500) * 500;
-        String cpu_path="assets_32";
+        String cpu_path="assets_201";
 
         String fileContent1 = getFileContent1("\\\\10.6.4.28\\"+cpu_path+"\\data_store\\assets\\" + user_group + "\\" + user_id + "\\cfg\\" + job_id + "\\info.cfg");
         JSONObject jsonObject = new JSONObject(fileContent1);
