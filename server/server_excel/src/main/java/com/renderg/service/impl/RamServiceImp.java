@@ -51,7 +51,6 @@ public class RamServiceImp implements RamService {
 
                 }
 
-
                 if (info.get(i).getStat() == 2) {
                     if (settings.get(i).getEnable()) {
                         if (settings.get(i).getCmmt().length() == 0) {

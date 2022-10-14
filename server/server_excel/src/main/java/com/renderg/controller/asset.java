@@ -32,8 +32,8 @@ public class asset {
 
     public static void main(String[] args) {
 
-        String job_id = "1038440";
-        Integer user_id = 2457;
+        String job_id = "1081324";
+        Integer user_id = 4377;
         Integer user_group = Math.round(user_id.intValue() / 500) * 500;
         String cpu_path="assets_201";
 
@@ -87,7 +87,9 @@ public class asset {
         //new File("D:\\Max\\Max2014\\脚本拷过来的\\"+filename).mkdirs();
         for (String s : pathList) {
             File from_file = new File(s);
-            File to_file = new File("D:\\Max\\Max2014\\脚本拷过来的\\" + filename);
+            new File("\\\\assets6.renderg.com\\assets_201\\data_stort");
+            File to_file =new File("\\\\assets6.renderg.com\\assets_201\\data_store\\assets\\1500\\1706\\input\\G\\抓的场景\\"+filename);
+            //File to_file = new File("D:\\Max\\Max2014\\脚本拷过来的\\" + filename);
             try {
                 //判断目标是否为目录
                 if (from_file.isDirectory()) {
@@ -192,6 +194,10 @@ public class asset {
             return false;
         }
         return true;
+
+
+
+
     }
 
 }

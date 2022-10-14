@@ -1,6 +1,5 @@
 package com.renderg.pojo;
 
-import org.springframework.stereotype.Component;
 
 /**
  * 测试枚举
@@ -79,17 +78,22 @@ public enum TestEnums {
     }
 
     public static void main(String[] args) {
-//        // 测试获取枚举变量
-//        TestEnums testEnums = TestEnums.typeOf(1);
-//        if (testEnums != null) {
-//            System.out.println(testEnums.desc);
-//            System.out.println(testEnums.getDesc());
-//        }
-//        // 测试获取枚举描述
-//        String desc = TestEnums.showDesc(0);
-//        System.out.println(desc);
+        // 测试获取枚举变量
+        TestEnums testEnums = TestEnums.typeOf(1);
+        if (testEnums != null) {
+            System.out.println(testEnums.desc);
+            System.out.println(testEnums.getDesc());
+        }
+        // 测试获取枚举描述
+        String desc = TestEnums.showDesc(0);
+        System.out.println(desc);
 
         TestEnums.showDesc(1);
+
+        testEnums.getDesc();
+        TestEnums.showDesc(2);
+
+        TestEnums.showDesc(3);
 
     }
 

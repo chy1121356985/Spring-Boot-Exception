@@ -20,4 +20,10 @@ public class SlaveSettingsMongo {
 
     @Field("Cmmt")
     private String cmmt;
+
+    @Field("Desc")
+    private String desc;
+
+    @Field("Ex3")
+    private String ex3;
 }

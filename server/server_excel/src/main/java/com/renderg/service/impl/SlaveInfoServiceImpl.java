@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -71,7 +70,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             if (!Pattern.matches("w-.*", info.get(i).getId())) {
                 continue;
             }
-            if (info.get(i).getDiskStr().length()<=2){
+            if (info.get(i).getDiskStr().length() <= 2) {
                 continue;
             }
 
@@ -96,7 +95,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                         }
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println(e.getMessage()+"-----");
+                    System.out.println(e.getMessage() + "-----");
                 }
 
 
@@ -182,7 +181,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 }
 
             } catch (Exception e) {
-                System.out.println(e.getMessage()+"----"+info.get(i).getId());
+                System.out.println(e.getMessage() + "----" + info.get(i).getId());
             }
 
             //运行内存是否变小大于5GB
@@ -286,9 +285,14 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         String str = "异常节点数量:" + size + "\n" + "C盘可用空间不足10GB: " + diskStrLists.size() + "台" + "\n";
 
         for (DiskStr diskStr : diskStrLists) {
+            String desc = null;
+            String ex3 = null;
             try {
                 String stat = TestEnums.showDesc(diskStr.getStat());
-                str = str + "ID:" + diskStr.getId() + ";状态:"+stat+";C盘可用存储:" + diskStr.getDiskStr() + "\n";
+                SlaveSettingsMongo setting = mongoTemplate.findById(diskStr.getId(), SlaveSettingsMongo.class);
+                desc = setting.getDesc();
+                ex3 = setting.getEx3();
+                str = str + "ID:" + diskStr.getId() + "; 状态:" + stat + "; 系统:" + desc + "; C盘大小:" + ex3 + "; C盘可用存储:" + diskStr.getDiskStr() + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskStr);
             }
