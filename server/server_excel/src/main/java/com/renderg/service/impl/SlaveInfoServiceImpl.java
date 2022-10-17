@@ -369,9 +369,15 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         for (DiskOther diskOther : diskOthers) {
-            str = str + "ID:" + diskOther.getId() + "\n";
+            String desc = null;
+            try {
+                SlaveSettingsMongo setting = mongoTemplate.findById(diskOther.getId(), SlaveSettingsMongo.class);
+                desc = setting.getDesc();
+                str = str + "ID:" + diskOther.getId() + "; 系统:" + desc + "\n";
+            } catch (Exception e) {
+                System.out.println(e.getMessage() + ":" + diskOther);
+            }
         }
-
 
         str = str + "运行内存减小数量: " + ramErrors.size() + "台" + "\n";
 
@@ -390,7 +396,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         for (RamError ramError : ramErrors) {
             long agoRam = ramError.getAgoRam() / 1073741824 + 1;
             long ram = ramError.getRam() / 1073741824;
-            str = str + "ID:" + ramError.getId() + " 昨日内存:" + agoRam + "GB 实时内存:" + ram + "GB" + "\n";
+            str = str + "ID:" + ramError.getId() + " 昨日内存:" + agoRam + "GB; 实时内存:" + ram + "GB" + "\n";
         }
 
         str = str + "Disabled数量: " + enableList.size() + "台" + "\n";
@@ -407,7 +413,15 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             });
         }
         for (Enable enable : enableList) {
-            str = str + enable + "\n";
+            String desc = null;
+            try {
+                SlaveSettingsMongo setting = mongoTemplate.findById(enable.getId(), SlaveSettingsMongo.class);
+                desc = setting.getDesc();
+                str = str + "ID:" + enable.getId() + "; enable:" + enable.getEnable() + "; os:" + desc + "; cmmt:" + enable.getCmmt() + "\n";
+            } catch (Exception e) {
+                System.out.println(e.getMessage() + ":" + enable);
+            }
+
         }
 
         System.out.println(str + new Date());
