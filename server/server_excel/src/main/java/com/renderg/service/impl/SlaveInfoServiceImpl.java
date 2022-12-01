@@ -73,6 +73,15 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             if (info.get(i).getDiskStr().length() <= 2) {
                 continue;
             }
+            try {
+                SlaveSettingsMongo setting = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class);
+                if (!setting.getEnable()) {
+                    continue;
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
 
             //盘符列为空或者是-1直接报出
             //对C盘进行筛选 不足10GB
@@ -174,6 +183,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 //未标记检查
                 if (enable) {
                     if (info.get(i).getDiskStr().length() > 15) {
+
                         diskOther.setId(info.get(i).getId());
                         diskOther.setDiskStr(info.get(i).getDiskStr());
                         diskOthers.add(diskOther);
@@ -372,8 +382,10 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             String desc = null;
             try {
                 SlaveSettingsMongo setting = mongoTemplate.findById(diskOther.getId(), SlaveSettingsMongo.class);
+                SlaveInfoMongo slave = mongoTemplate.findById(diskOther.getId(), SlaveInfoMongo.class);
+                String stat = TestEnums.showDesc(slave.getStat());
                 desc = setting.getDesc();
-                str = str + "ID:" + diskOther.getId() + "; 系统:" + desc + "\n";
+                str = str + "ID:" + diskOther.getId() + "; 状态:" + stat + "; 系统:" + desc + "\n";
             } catch (Exception e) {
                 System.out.println(e.getMessage() + ":" + diskOther);
             }
