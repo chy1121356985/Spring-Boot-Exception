@@ -32,8 +32,8 @@ public class asset {
 
     public static void main(String[] args) {
 
-        String job_id = "1081324";
-        Integer user_id = 4377;
+        String job_id = "1118699";
+        Integer user_id = 5885;
         Integer user_group = Math.round(user_id.intValue() / 500) * 500;
         String cpu_path="assets_201";
 
@@ -194,10 +194,6 @@ public class asset {
             return false;
         }
         return true;
-
-
-
-
     }
 
 }

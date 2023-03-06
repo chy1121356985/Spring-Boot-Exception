@@ -180,13 +180,17 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             try {
                 //获取enable字段
                 Boolean enable = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class).getEnable();
+                SlaveInfoMongo infoMongoStat = info.get(i);
                 //未标记检查
                 if (enable) {
-                    if (info.get(i).getDiskStr().length() > 15) {
+                    if (infoMongoStat.getStat() != 0 & infoMongoStat.getStat() != 3 & infoMongoStat.getStat() != 4) {
 
-                        diskOther.setId(info.get(i).getId());
-                        diskOther.setDiskStr(info.get(i).getDiskStr());
-                        diskOthers.add(diskOther);
+                        if (infoMongoStat.getDiskStr().length() > 15) {
+
+                            diskOther.setId(info.get(i).getId());
+                            diskOther.setDiskStr(info.get(i).getDiskStr());
+                            diskOthers.add(diskOther);
+                        }
                     }
                 }
 
@@ -437,7 +441,9 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         System.out.println(str + new Date());
-        httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        if (size > 0) {
+            httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+        }
         return str;
 
     }
