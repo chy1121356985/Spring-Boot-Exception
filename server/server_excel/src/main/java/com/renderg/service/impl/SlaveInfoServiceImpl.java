@@ -179,10 +179,10 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             //非c、d盘检查
             try {
                 //获取enable字段
-                Boolean enable = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class).getEnable();
+                SlaveSettingsMongo slaveSettingsMongo = mongoTemplate.findById(info.get(i).getId(), SlaveSettingsMongo.class);
                 SlaveInfoMongo infoMongoStat = info.get(i);
                 //未标记检查
-                if (enable) {
+                if (slaveSettingsMongo.getEnable() & slaveSettingsMongo.getCmmt().length() == 0) {
                     if (infoMongoStat.getStat() != 0 & infoMongoStat.getStat() != 3 & infoMongoStat.getStat() != 4) {
 
                         if (infoMongoStat.getDiskStr().length() > 15) {
