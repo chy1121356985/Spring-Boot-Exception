@@ -1,5 +1,6 @@
 package com.renderg.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renderg.entity.SlaveInfoMongo;
@@ -249,6 +250,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         int size = diskStrList.size() + ramErrors.size() + enableList.size() + diskOthers.size();
+        System.out.println("diskStrList.size() + ramErrors.size() + enableList.size() + diskOthers.size()" + diskStrList.size() + "---" + ramErrors.size() + "---" + enableList.size() + "---" + diskOthers.size());
         //对id进行排序
 //        Collections.sort(diskStrList, new Comparator<DiskStr>() {
 //            @Override
@@ -261,6 +263,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 //            }
 //        });
         List<DiskStr> diskStrBytes = new ArrayList<>();
+        List<DiskStr> diskStrKB = new ArrayList<>();
         List<DiskStr> diskStrMB = new ArrayList<>();
         List<DiskStr> diskStrGB = new ArrayList<>();
         ArrayList<DiskStr> diskStrNull = new ArrayList<>();
@@ -271,7 +274,9 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
                 diskStrBytes.add(diskStr);
             } else if (diskStr.getDiskStr().length() == 0) {
                 diskStrNull.add(diskStr);
-            } else if (diskStr.getDiskStr().contains("MB")) {
+            }else if (diskStr.getDiskStr().contains("KB")){
+                diskStrKB.add(diskStr);
+            }else if (diskStr.getDiskStr().contains("MB")) {
                 diskStrMB.add(diskStr);
             } else if (diskStr.getDiskStr().contains("GB")) {
                 diskStrGB.add(diskStr);
@@ -279,6 +284,7 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
         }
 
         Collections.sort(diskStrBytes);
+        Collections.sort(diskStrKB);
         Collections.sort(diskStrMB);
         Collections.sort(diskStrGB);
 
@@ -286,6 +292,9 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
             diskStrLists.add(diskStr);
         }
         for (DiskStr diskStr : diskStrBytes) {
+            diskStrLists.add(diskStr);
+        }
+        for (DiskStr diskStr : diskStrKB) {
             diskStrLists.add(diskStr);
         }
         for (DiskStr diskStr : diskStrMB) {
@@ -442,7 +451,13 @@ public class SlaveInfoServiceImpl extends ServiceImpl<SlaveInfoMapper, SlaveInfo
 
         System.out.println(str + new Date());
         if (size > 0) {
-            httpUtils.feishu(str, "oc_1b4eec9c7b8bf2077930a1a7b42614eb");
+            JSONObject data = new JSONObject();
+            data.put("type_id", "062005");
+            data.put("title", new JSONObject());
+            data.put("msg", str);
+            System.out.println(data + "************");
+            String s = httpUtils.feishu_type(data);
+            System.out.println(s);
         }
         return str;
 

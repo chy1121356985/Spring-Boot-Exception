@@ -29,7 +29,7 @@ public class SlaveInfoController {
 
     @GetMapping("/find")
     public R findAll() {
-
+        System.out.println("---------------------");
         String msg = infoService.findSlave();
         return R.ok().data("msg", msg);
     }

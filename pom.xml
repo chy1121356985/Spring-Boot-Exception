@@ -46,6 +46,7 @@
         <cloud-alibaba.version>0.2.2.RELEASE</cloud-alibaba.version>
         <lombok.version>1.18.22</lombok.version>
         <mybatis.version>2.1.3</mybatis.version>
+        <hutool.version>5.8.16</hutool.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -194,14 +195,20 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
-           
+            <!-- 除法百分比-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
 
 
-           <!-- <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>-->
+
+            <!-- <dependency>
+                 <groupId>org.mybatis.spring.boot</groupId>
+                 <artifactId>mybatis-spring-boot-starter</artifactId>
+                 <version>${mybatis.version}</version>
+             </dependency>-->
 
         </dependencies>
     </dependencyManagement>
